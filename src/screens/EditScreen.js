@@ -1,49 +1,21 @@
 import React, { useContext, useState } from "react";
-import {
-	View,
-	Text,
-	StyleSheet,
-	FlatList,
-	TextInput,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { Context } from "../context/blogContext";
+import BlogPostForm from "../components/BlogPostForm";
 
 const EditScreen = ({ navigation }) => {
 	const id = navigation.getParam("id");
 	const { state, editBlogPost } = useContext(Context);
 	const blogPost = state.find((blogPost) => blogPost.id === id);
 
-	const [title, setTitle] = useState(blogPost.title);
-	const [content, setContent] = useState(blogPost.content);
-
 	return (
-		<View>
-			<Text style={styles.pageTitle}>Edit blog post: {blogPost.id}</Text>
-			<Text style={styles.inputHeader}>Edit title:</Text>
-			<TextInput
-				style={styles.textInput}
-				value={title}
-				onChangeText={(text) => setTitle(text)}
-			/>
-
-			<Text style={styles.inputHeader}>Edit content:</Text>
-			<TextInput
-				style={styles.textInput}
-				value={content}
-				onChangeText={(text) => setContent(text)}
-			/>
-			<TouchableOpacity
-				style={styles.btnAddBlogPost}
-				onPress={() => {
-					editBlogPost(blogPost.id, title, content, () => {
-						navigation.navigate("Index");
-					});
-				}}
-			>
-				<Text style={styles.btnText}>Save</Text>
-			</TouchableOpacity>
-		</View>
+		<BlogPostForm
+			formTitle="Edit Blog Post"
+			onSubmit={(title, content) => {
+				editBlogPost(id, title, content, () => navigation.pop());
+			}}
+			initialValues={{ title: blogPost.title, content: blogPost.content }}
+		/>
 	);
 };
 
